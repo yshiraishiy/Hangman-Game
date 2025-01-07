@@ -33,4 +33,43 @@ function displayWord() {
   }
 }
 
+// 間違えた文字を配列に追加
+function updateWrongLetterEl() {
+  console.log("a");
+}
+
+// 通知を表示
+function showNotification() {
+  notification.classList.add("show");
+
+  setTimeout(() => {
+    notification.classList.remove("show");
+  }, 2000)
+}
+
+// キーボードで文字を入力
+window.addEventListener("keydown", (e) => {
+  const letter = e.key.toLowerCase();
+
+  if (letter >= 'a' && letter <= 'z') {
+    if (selectedWord.includes(letter)) {
+      if (!correctLetters.includes(letter)) {
+        correctLetters.push(letter);
+
+        displayWord();
+      } else {
+        showNotification();
+      }
+    } else {
+      if (!wrongLetters.includes(letter)) {
+        wrongLetters.push(letter);
+
+        updateWrongLetterEl();
+      } else {
+        showNotification();
+      }
+    }
+  }
+});
+
 displayWord();
