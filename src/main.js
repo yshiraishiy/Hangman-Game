@@ -5,7 +5,7 @@ const popup = document.getElementById("popup-container");
 const notification = document.getElementById("notification-container");
 const finalMessage = document.getElementById("final-message");
 
-const figurePart = document.querySelectorAll(".figure-part");
+const figureParts = document.querySelectorAll(".figure-part");
 
 const words = ["application", "programming", "interface", "wizard"];
 
@@ -35,7 +35,27 @@ function displayWord() {
 
 // 間違えた文字を配列に追加
 function updateWrongLetterEl() {
-  console.log("a");
+  // 間違えた文字を表示
+  wrongLettersEl.innerHTML = `${
+    wrongLetters.length > 0 ? "<p>Wrong</p>" : ""
+  } ${wrongLetters.map((letter) => `<span>${letter}</span>`)}`;
+
+  // パーツを表示
+  figureParts.forEach((part, index) => {
+    const errors = wrongLetters.length;
+
+    if (index < errors) {
+      part.style.display = "block";
+    } else {
+      part.style.display = "none";
+    }
+  });
+
+  // ゲームに負けたか確認
+  if (wrongLetters.length === figureParts.length) {
+    finalMessage.innerText = "Unfortunately you lost. 😕";
+    popup.style.display = "flex";
+  }
 }
 
 // 通知を表示
@@ -44,14 +64,14 @@ function showNotification() {
 
   setTimeout(() => {
     notification.classList.remove("show");
-  }, 2000)
+  }, 2000);
 }
 
 // キーボードで文字を入力
 window.addEventListener("keydown", (e) => {
   const letter = e.key.toLowerCase();
 
-  if (letter >= 'a' && letter <= 'z') {
+  if (letter >= "a" && letter <= "z") {
     if (selectedWord.includes(letter)) {
       if (!correctLetters.includes(letter)) {
         correctLetters.push(letter);
@@ -70,6 +90,20 @@ window.addEventListener("keydown", (e) => {
       }
     }
   }
+});
+
+// ゲームをリスタート
+playAgainBtn.addEventListener("click", () => {
+  correctLetters.splice(0);
+  wrongLetters.splice(0);
+
+  selectedWord = words[Math.floor(Math.random() * words.length)];
+
+  displayWord();
+
+  updateWrongLetterEl();
+
+  popup.style.display = "none";
 });
 
 displayWord();
